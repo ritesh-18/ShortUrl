@@ -30,7 +30,7 @@ export default function LinkTable({ links, loading, onDelete }) {
       );
 
       toast.success("Link deleted successfully!");
-      onDelete(); // refresh parent
+      onDelete(); 
 
     } catch (err) {
       toast.error("Failed to delete link");
@@ -41,11 +41,11 @@ export default function LinkTable({ links, loading, onDelete }) {
 
   const dataToShow = useSample ? sampleData : links;
 
-  if (!dataToShow.length)
-    return <p>No links found.</p>;
+  if (!dataToShow.length) return <p>No links found.</p>;
 
   return (
-    <div className="mt-3">
+    <div className="mt-3 w-full">
+      
       {/* SAMPLE DATA BUTTON */}
       <button
         onClick={() => setUseSample(!useSample)}
@@ -54,16 +54,16 @@ export default function LinkTable({ links, loading, onDelete }) {
         {useSample ? "Hide Sample Data" : "Show Sample Data"}
       </button>
 
-      <div className="overflow-x-auto rounded-xl shadow-lg border border-gray-200 bg-white">
+      <div className="w-full overflow-x-auto border border-gray-200 rounded-xl shadow-lg bg-white">
 
-        <table className="w-full text-left border-collapse">
+        <table className="min-w-full border-collapse">
           <thead>
             <tr className="bg-gray-50 border-b">
-              <th className="p-4 text-sm font-semibold text-gray-700">Code</th>
-              <th className="p-4 text-sm font-semibold text-gray-700">URL</th>
-              <th className="p-4 text-sm font-semibold text-gray-700">Clicks</th>
-              <th className="p-4 text-sm font-semibold text-gray-700">Last Clicked</th>
-              <th className="p-4 text-sm font-semibold text-gray-700">Actions</th>
+              <th className="p-4 text-sm font-semibold text-gray-700 whitespace-nowrap">Code</th>
+              <th className="p-4 text-sm font-semibold text-gray-700 whitespace-nowrap min-w-[250px]">URL</th>
+              <th className="p-4 text-sm font-semibold text-gray-700 whitespace-nowrap">Clicks</th>
+              <th className="p-4 text-sm font-semibold text-gray-700 whitespace-nowrap">Last Clicked</th>
+              <th className="p-4 text-sm font-semibold text-gray-700 whitespace-nowrap min-w-[150px]">Actions</th>
             </tr>
           </thead>
 
@@ -73,19 +73,19 @@ export default function LinkTable({ links, loading, onDelete }) {
                 key={l.code}
                 className="border-b hover:bg-gray-50 transition"
               >
-                <td className="p-4 font-medium text-gray-900">{l.code}</td>
+                <td className="p-4 font-medium text-gray-900 whitespace-nowrap">{l.code}</td>
 
-                <td className="p-4 max-w-xs truncate text-gray-700">
+                <td className="p-4 max-w-xs truncate text-gray-700 whitespace-nowrap min-w-[250px]">
                   {l.targetUrl}
                 </td>
 
-                <td className="p-4 text-gray-700">{l.clicks}</td>
+                <td className="p-4 text-gray-700 whitespace-nowrap">{l.clicks}</td>
 
-                <td className="p-4 text-gray-600">
-                  {l.lastClicked || "-"}
+                <td className="p-4 text-gray-600 whitespace-nowrap">
+                  {l.lastClicked || "Not clicked yet"}
                 </td>
 
-                <td className="p-4 flex items-center gap-3">
+                <td className="p-4 flex items-center gap-3 whitespace-nowrap">
                   <Link
                     to={`/code/${l.code}`}
                     className="text-blue-600 hover:text-blue-800 font-medium transition"
