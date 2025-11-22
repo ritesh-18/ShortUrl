@@ -1,6 +1,8 @@
 const express = require("express")
 const cors=require("cors")
 const dotenv=require("dotenv")
+const {checkDbHealth}=require("./config/db.config");
+
 const linkRoutes=require("./router/linkrouter")
  const runQuery=require("./db/db.queries")
 dotenv.config(); 
@@ -21,7 +23,16 @@ const PORT =process.env.PORT||3000;
 app.get("/healthz", (_, res) => {
     res.json({ ok: true, version: "1.0" });
   });
-
+app.get("/db-health" , async(req, res)=>{
+  try {
+    const result= await checkDbHealth();
+    res.json( result);
+    
+  } catch (error) {
+    res.status(error.status|| 500).json({ok:false, error:error.message});
+    
+  }
+})
 app.get("/:code", async (req, res) => {
   try {
     const code = req.params.code;

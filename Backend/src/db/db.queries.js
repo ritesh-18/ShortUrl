@@ -1,5 +1,5 @@
 //here we add the logic to interact with the databse using raw sql queries
-const pool= require('../config/db.config')
+const {pool}= require('../config/db.config')
 
 async function runQuery(querytext, params=[]){
 

@@ -1,44 +1,114 @@
 import axios from "axios";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
+import { useState } from "react";
 
 export default function LinkTable({ links, loading, onDelete }) {
+  const [useSample, setUseSample] = useState(false);
+
+  const sampleData = [
+    {
+      code: "abc123",
+      targetUrl: "https://example.com",
+      clicks: 42,
+      lastClicked: "2024-11-10",
+      created_at: "2024-11-01"
+    },
+    {
+      code: "xyz789",
+      targetUrl: "https://google.com",
+      clicks: 15,
+      lastClicked: "2024-11-12",
+      created_at: "2024-11-02"
+    }
+  ];
+
   async function remove(code) {
-    await axios.delete(`https://short-url-omega-ashy.vercel.app/api/links/${code}`);
-    onDelete();
+    try {
+      await axios.delete(
+        `https://short-url-omega-ashy.vercel.app/api/links/${code}`
+      );
+
+      toast.success("Link deleted successfully!");
+      onDelete(); // refresh parent
+
+    } catch (err) {
+      toast.error("Failed to delete link");
+    }
   }
 
   if (loading) return <p>Loading...</p>;
-  if (!links.length) return <p>No links found.</p>;
+
+  const dataToShow = useSample ? sampleData : links;
+
+  if (!dataToShow.length)
+    return <p>No links found.</p>;
 
   return (
-    <table className="w-full bg-white shadow rounded">
-      <thead>
-        <tr className="bg-gray-100 border-b">
-          <th className="p-2">Code</th>
-          <th className="p-2">URL</th>
-          <th className="p-2">Clicks</th>
-          <th className="p-2">Last Clicked</th>
-          <th className="p-2">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {links.map(l => (
-          <tr key={l.code} className="border-b">
-            <td className="p-2">{l.code}</td>
-            <td className="p-2 truncate max-w-xs">{l.targetUrl}</td>
-            <td className="p-2">{l.clicks}</td>
-            <td className="p-2">{l.lastClicked || "-"}</td>
-            <td className="p-2 flex gap-2">
-              <Link className="text-blue-600 underline" to={`/code/${l.code}`}>
-                Stats
-              </Link>
-              <button className="text-red-600" onClick={() => remove(l.code)}>
-                Delete
-              </button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div className="mt-3">
+      {/* SAMPLE DATA BUTTON */}
+      <button
+        onClick={() => setUseSample(!useSample)}
+        className="mb-3 px-4 py-2 bg-gray-800 text-white rounded hover:bg-black transition"
+      >
+        {useSample ? "Hide Sample Data" : "Show Sample Data"}
+      </button>
+
+      <div className="overflow-x-auto rounded-xl shadow-lg border border-gray-200 bg-white">
+
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="bg-gray-50 border-b">
+              <th className="p-4 text-sm font-semibold text-gray-700">Code</th>
+              <th className="p-4 text-sm font-semibold text-gray-700">URL</th>
+              <th className="p-4 text-sm font-semibold text-gray-700">Clicks</th>
+              <th className="p-4 text-sm font-semibold text-gray-700">Last Clicked</th>
+              <th className="p-4 text-sm font-semibold text-gray-700">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {dataToShow.map((l) => (
+              <tr
+                key={l.code}
+                className="border-b hover:bg-gray-50 transition"
+              >
+                <td className="p-4 font-medium text-gray-900">{l.code}</td>
+
+                <td className="p-4 max-w-xs truncate text-gray-700">
+                  {l.targetUrl}
+                </td>
+
+                <td className="p-4 text-gray-700">{l.clicks}</td>
+
+                <td className="p-4 text-gray-600">
+                  {l.lastClicked || "-"}
+                </td>
+
+                <td className="p-4 flex items-center gap-3">
+                  <Link
+                    to={`/code/${l.code}`}
+                    className="text-blue-600 hover:text-blue-800 font-medium transition"
+                  >
+                    Stats
+                  </Link>
+
+                  {!useSample && (
+                    <button
+                      onClick={() => remove(l.code)}
+                      className="text-red-600 hover:text-red-800 font-medium transition"
+                    >
+                      Delete
+                    </button>
+                  )}
+                </td>
+
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+      </div>
+    </div>
   );
 }

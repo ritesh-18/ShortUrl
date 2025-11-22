@@ -20,7 +20,28 @@ pool.on("connect", () => {
     console.error("Unexpected PG error:", err);
     process.exit(-1);
   });
-  
+  // a function which checks the db health
+  const checkDbHealth = async () => {
+    try {
+     const res= await pool.query("SELECT 1");
+      console.log("Database connection is healthy.");
+    return { ok: true, health: "Database is  Working"};
+
+      
+    
+   } catch (error) {
+      console.error("Database connection error:", error);
+      const err= new Error("Unable to connect to the database");
+      err.status=500;
+      throw err;
+    
+
+      
+    }
+  }
+
+
+
   // graceful shutdown — closes pool before exit (on app termination we need to handle this to avoid leaks)
   const shutdownPool = async () => {
     try {
@@ -37,4 +58,5 @@ pool.on("connect", () => {
   process.on("SIGINT", shutdownPool);
   process.on("SIGTERM", shutdownPool);
   
-module.exports=pool;
+// module.exports=pool;
+ module.exports={pool,checkDbHealth};
