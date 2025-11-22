@@ -13,7 +13,7 @@ export default function AddLinkForm({ onAdded }) {
     setLoading(true);
 
     try {
-      await axios.post("http://localhost:3001/api/links", { targetUrl, code });
+      await axios.post("https://short-url-omega-ashy.vercel.app/api/links", { targetUrl, code });
       setTargetUrl("");
       setCode("");
       onAdded();

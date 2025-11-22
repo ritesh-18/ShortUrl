@@ -7,7 +7,7 @@ export default function StatsPage() {
   const [link, setLink] = useState(null);
 
   useEffect(() => {
-    axios.get(`http://localhost:3001/api/links/${code}`).then(res => setLink(res.data));
+    axios.get(`https://short-url-omega-ashy.vercel.app/api/links/${code}`).then(res => setLink(res.data));
   }, [code]);
 
   if (!link) return <p>Loading...</p>;

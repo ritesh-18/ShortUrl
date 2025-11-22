@@ -9,7 +9,7 @@ export default function Dashboard() {
 
   async function load() {
     setLoading(true);
-    const res = await axios.get("http://localhost:3001/api/links");
+    const res = await axios.get("https://short-url-omega-ashy.vercel.app/api/links");
     setLinks(res.data);
     setLoading(false);
   }

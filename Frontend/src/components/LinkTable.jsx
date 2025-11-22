@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export default function LinkTable({ links, loading, onDelete }) {
   async function remove(code) {
-    await axios.delete(`http://localhost:3001/api/links/${code}`);
+    await axios.delete(`https://short-url-omega-ashy.vercel.app/api/links/${code}`);
     onDelete();
   }
 
