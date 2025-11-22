@@ -12,15 +12,15 @@ export default function LinkTable({ links, loading, onDelete }) {
       targetUrl: "https://example.com",
       clicks: 42,
       lastClicked: "2024-11-10",
-      created_at: "2024-11-01"
+      created_at: "2024-11-01",
     },
     {
       code: "xyz789",
       targetUrl: "https://google.com",
       clicks: 15,
       lastClicked: "2024-11-12",
-      created_at: "2024-11-02"
-    }
+      created_at: "2024-11-02",
+    },
   ];
 
   async function remove(code) {
@@ -30,8 +30,7 @@ export default function LinkTable({ links, loading, onDelete }) {
       );
 
       toast.success("Link deleted successfully!");
-      onDelete(); 
-
+      onDelete();
     } catch (err) {
       toast.error("Failed to delete link");
     }
@@ -45,7 +44,6 @@ export default function LinkTable({ links, loading, onDelete }) {
 
   return (
     <div className="mt-3 w-full">
-      
       {/* SAMPLE DATA BUTTON */}
       <button
         onClick={() => setUseSample(!useSample)}
@@ -55,31 +53,47 @@ export default function LinkTable({ links, loading, onDelete }) {
       </button>
 
       <div className="w-full overflow-x-auto border border-gray-200 rounded-xl shadow-lg bg-white">
-
         <table className="min-w-full border-collapse">
           <thead>
             <tr className="bg-gray-50 border-b">
-              <th className="p-4 text-sm font-semibold text-gray-700 whitespace-nowrap">Code</th>
-              <th className="p-4 text-sm font-semibold text-gray-700 whitespace-nowrap min-w-[250px]">URL</th>
-              <th className="p-4 text-sm font-semibold text-gray-700 whitespace-nowrap">Clicks</th>
-              <th className="p-4 text-sm font-semibold text-gray-700 whitespace-nowrap">Last Clicked</th>
-              <th className="p-4 text-sm font-semibold text-gray-700 whitespace-nowrap min-w-[150px]">Actions</th>
+              <th className="p-4 text-sm font-semibold text-gray-700 whitespace-nowrap">
+                Code
+              </th>
+              <th className="p-4 text-sm font-semibold text-gray-700 whitespace-nowrap min-w-[250px]">
+                SHORT URL
+              </th>
+              <th className="p-4 text-sm font-semibold text-gray-700 whitespace-nowrap">
+                Clicks
+              </th>
+              <th className="p-4 text-sm font-semibold text-gray-700 whitespace-nowrap">
+                Last Clicked
+              </th>
+              <th className="p-4 text-sm font-semibold text-gray-700 whitespace-nowrap min-w-[150px]">
+                Actions
+              </th>
             </tr>
           </thead>
 
           <tbody>
             {dataToShow.map((l) => (
-              <tr
-                key={l.code}
-                className="border-b hover:bg-gray-50 transition"
-              >
-                <td className="p-4 font-medium text-gray-900 whitespace-nowrap">{l.code}</td>
-
-                <td className="p-4 max-w-xs truncate text-gray-700 whitespace-nowrap min-w-[250px]">
-                  {l.target_url}
+              <tr key={l.code} className="border-b hover:bg-gray-50 transition">
+                <td className="p-4 font-medium text-gray-900 whitespace-nowrap">
+                  {l.code}
                 </td>
 
-                <td className="p-4 text-gray-700 whitespace-nowrap">{l.clicks}</td>
+                <td className="p-4 max-w-xs truncate text-blue-600 underline cursor-pointer whitespace-nowrap min-w-[250px]">
+                  <a
+                    href={`https://short-url-omega-ashy.vercel.app/api/links/${l.code}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {`https://short-url-omega-ashy.vercel.app/api/links/${l.code}`}
+                  </a>
+                </td>
+
+                <td className="p-4 text-gray-700 whitespace-nowrap">
+                  {l.clicks}
+                </td>
 
                 <td className="p-4 text-gray-600 whitespace-nowrap">
                   {l.last_clicked || "Not clicked yet"}
@@ -102,12 +116,10 @@ export default function LinkTable({ links, loading, onDelete }) {
                     </button>
                   )}
                 </td>
-
               </tr>
             ))}
           </tbody>
         </table>
-
       </div>
     </div>
   );
