@@ -76,13 +76,13 @@ export default function LinkTable({ links, loading, onDelete }) {
                 <td className="p-4 font-medium text-gray-900 whitespace-nowrap">{l.code}</td>
 
                 <td className="p-4 max-w-xs truncate text-gray-700 whitespace-nowrap min-w-[250px]">
-                  {l.targetUrl}
+                  {l.target_url}
                 </td>
 
                 <td className="p-4 text-gray-700 whitespace-nowrap">{l.clicks}</td>
 
                 <td className="p-4 text-gray-600 whitespace-nowrap">
-                  {l.lastClicked || "Not clicked yet"}
+                  {l.last_clicked || "Not clicked yet"}
                 </td>
 
                 <td className="p-4 flex items-center gap-3 whitespace-nowrap">
