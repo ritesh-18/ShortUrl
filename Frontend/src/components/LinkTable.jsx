@@ -83,11 +83,11 @@ export default function LinkTable({ links, loading, onDelete }) {
 
                 <td className="p-4 max-w-xs truncate text-blue-600 underline cursor-pointer whitespace-nowrap min-w-[250px]">
                   <a
-                    href={`https://short-url-omega-ashy.vercel.app/api/links/${l.code}`}
+                    href={`https://short-url-omega-ashy.vercel.app/${l.code}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {`https://short-url-omega-ashy.vercel.app/api/links/${l.code}`}
+                    {`https://short-url-omega-ashy.vercel.app/${l.code}`}
                   </a>
                 </td>
 
