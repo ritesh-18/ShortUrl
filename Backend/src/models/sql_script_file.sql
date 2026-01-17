@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS links (
+CREATE TABLE IF NOT EXISTS short_url.links (
     code TEXT PRIMARY KEY,
     target_url TEXT NOT NULL,
     clicks INTEGER NOT NULL DEFAULT 0,

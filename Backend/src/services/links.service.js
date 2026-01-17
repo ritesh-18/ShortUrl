@@ -1,5 +1,7 @@
 const runQuery = require("../db/db.queries");
-
+const { RedisManager }= require("../config/redis.config");
+const keys = require("../constants/constants.d");
+let globalCount=0
 function isValidUrl(url) {
   try {
     new URL(url);
@@ -34,7 +36,7 @@ async function createShortLinkService({ targetUrl, code }) {
 
     // check duplicate
     const exists = await runQuery(
-      `SELECT * FROM links WHERE code = $1`,
+      `SELECT * FROM short_url.links WHERE code = $1`,
       [shortCode]
     );
 
@@ -45,7 +47,7 @@ async function createShortLinkService({ targetUrl, code }) {
     }
 
     const result = await runQuery(
-      `INSERT INTO links (code, target_url) VALUES ($1, $2) RETURNING *`,
+      `INSERT INTO short_url.links (code, target_url) VALUES ($1, $2) RETURNING *`,
       [shortCode, targetUrl]
     );
 
@@ -60,10 +62,13 @@ async function createShortLinkService({ targetUrl, code }) {
 
 async function getAllLinksService() {
   try {
+   
+    
     const result = await runQuery(
-      `SELECT * FROM links ORDER BY created_at DESC`
+      `SELECT * FROM short_url.links ORDER BY created_at DESC`
     );
-    console.log("Fetched links:", result.rows);
+    // set the cache data
+    console.log("Fetched links:");
     return result.rows;  // empty is OK
 
   } catch (error) {
@@ -80,9 +85,19 @@ async function getLinkByIdService(code) {
       err.status = 400;
       throw err;
     }
+     // fetch links from cache if exists , otherwise from db and set cache
+     // if not in cache , then add lock (redis lock on that data 0) and then fetch from db and set cache also for others users add fallback and stale data logic
+    // here we skip lock and stale for all links fetch for simplicity
+    const data=await RedisManager.getInstance().get(keys.cachekey(code))
+    if(data){
+      globalCount++;
+      console.log("Fetched links from cache source : " , globalCount);
+
+      return {...data , source:'cache'}
+    }
 
     const result = await runQuery(
-      `SELECT * FROM links WHERE code=$1`,
+      `SELECT * FROM short_url.links WHERE code=$1`,
       [code]
     );
 
@@ -91,8 +106,10 @@ async function getLinkByIdService(code) {
       err.status = 404;
       throw err;
     }
-
-    return result.rows[0];
+    await RedisManager.getInstance().setWithoutStale(keys.cachekey(code) , result?.rows[0] , keys.CACHE_TTL)
+    globalCount++;
+    console.log("Fetched links from DB source. Total fetch count: ", globalCount);
+    return {...result.rows[0] , source:'db'};
 
   } catch (error) {
     const err = new Error("Error in getLinkByIdService: " + error.message);
@@ -110,7 +127,7 @@ async function deleteLinkByIdService(code) {
     }
 
     const result = await runQuery(
-      `DELETE FROM links WHERE code=$1 RETURNING *`,
+      `DELETE FROM short_url.links WHERE code=$1 RETURNING *`,
       [code]
     );
 
